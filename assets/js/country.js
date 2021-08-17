@@ -6,11 +6,11 @@ let chartLine;
 
 document.getElementById("filtro").addEventListener("click", async () => {
   if (formularioValido()) {
-  await getDataCountry(cmbCountry.value, dateStart.value, dateEnd.value).then(
-    (res) => {
-      renderResult(res.data);
-    }
-  );
+    await getDataCountry(cmbCountry.value, dateStart.value, dateEnd.value).then(
+      (res) => {
+        renderResult(res.data);
+      }
+    );
   }
 });
 
@@ -37,58 +37,71 @@ function renderChart(data) {
   const values = [];
   const average = [];
 
-  for (let i = 1; i < data.length ; i++) {
-      labels.push(dateFns.format(dateFns.addDays(data[i].Date,1), "DD-MM-YYYY"));
-      if(typeData.value == 'Deaths'){
-        values.push(data[i].Deaths - data[i-1].Deaths);
-        average.push((data[data.length-1].Deaths - data[0].Deaths)/(data.length-1));
-      } else if(typeData.value == 'Confirmed'){
-        values.push(data[i].Confirmed - data[i-1].Confirmed);
-        average.push((data[data.length-1].Confirmed - data[0].Confirmed)/(data.length-1));
-        
-      } else {
-        values.push(data[i].Recovered - data[i-1].Recovered);
-        average.push((data[data.length-1].Recovered - data[0].Recovered)/(data.length-1));
-      } 
+  for (let i = 1; i < data.length; i++) {
+    labels.push(dateFns.format(dateFns.addDays(data[i].Date, 1), "DD-MM-YYYY"));
+    if (typeData.value == "Deaths") {
+      values.push(data[i].Deaths - data[i - 1].Deaths);
+      average.push(
+        (data[data.length - 1].Deaths - data[0].Deaths) / (data.length - 1)
+      );
+    } else if (typeData.value == "Confirmed") {
+      values.push(data[i].Confirmed - data[i - 1].Confirmed);
+      average.push(
+        (data[data.length - 1].Confirmed - data[0].Confirmed) /
+          (data.length - 1)
+      );
+    } else {
+      values.push(data[i].Recovered - data[i - 1].Recovered);
+      average.push(
+        (data[data.length - 1].Recovered - data[0].Recovered) /
+          (data.length - 1)
+      );
+    }
   }
-  new Chart(document.getElementById("linhas"), {
-  type: 'line',
-  data: {
-      labels: labels,
-      datasets: [{
-          label: `Total - ${typeData.value}`,
-          data: values,
-          backgroundColor: '#aaa',
-          borderColor:'#ffa500'
 
-      },
-      {
-        label: `Average - ${typeData.value}`,
-        data: average,
-        backgroundColor: '#aaa',
-        borderColor:'#f00'
-      }]
-  },
-  options: {
+  if (chartLine) {
+    chartLine.destroy();
+  }
+
+  chartLine = new Chart(document.getElementById("linhas"), {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: `New - ${typeData.value}`,
+          data: values,
+          backgroundColor: "#aaa",
+          borderColor: "#ffa500",
+        },
+        {
+          label: `Period Average - ${typeData.value}`,
+          data: average,
+          backgroundColor: "#aaa",
+          borderColor: "#f00",
+        },
+      ],
+    },
+    options: {
       responsive: true,
       plugins: {
-          legend: {
-              position: 'top'
-          },
-          title: {
-              display: true,
-              text: `${typeData.value}`
-          }
-      }
-  }
-});
+        legend: {
+          position: "top",
+        },
+        title: {
+          display: true,
+          text: `${typeData.value}`,
+        },
+      },
+    },
+  });
 }
 
 function formularioValido() {
   if (cmbCountry.value && dateStart.value && dateEnd.value) {
     return true;
   } else {
-    alert("Informe todos os campos obrigatórios e datas válidas.");
+    alert("Enter all required fields and valid dates.");
     return false;
   }
 }

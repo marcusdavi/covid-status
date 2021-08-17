@@ -11,25 +11,15 @@ let dataSummary, dataGlobal;
     confirmedSummary.textContent = dataGlobal.TotalConfirmed.toLocaleString("pt-BR");
     deathSummary.textContent = dataGlobal.TotalDeaths.toLocaleString("pt-BR");
     recoveredsummary.textContent = dataGlobal.TotalRecovered.toLocaleString("pt-BR");
-    updateDate.textContent = `Data de atualização: ${dateFns.format(dataGlobal.Date, "DD/MM/YYYY HH:MM:ss")}`;
+    updateDate.textContent = `Update Date: ${dateFns.format(dataGlobal.Date, "DD/MM/YYYY HH:MM:ss")}`;
     loadChartPizza();
     loadTopTen();
   });
 })();
 
 function loadTopTen(){
-  countries = dataSummary.Countries;
-  countries.sort((a,b) => {
-        if(a.TotalDeaths < b.TotalDeaths) {
-          return 1;
-        } else if (a.TotalDeaths > b.TotalDeaths){
-          return -1
-        } else {
-          return 0;
-        }
-  });
-
-  countriesTopTen = _.dropRight(countries, countries.length - 10);
+  countries = _.orderBy(dataSummary.Countries, ["TotalDeaths"], ["desc"]);
+  countriesTopTen = _.take(countries, 10);
     loadChartTopTen(countriesTopTen);
 }
 
@@ -52,7 +42,7 @@ async function loadChartPizza() {
             },
             title: {
                 display: true,
-                text: "Distribuição de novos casos"
+                text: "Distribution - New Cases"
             }
         }
     }
@@ -73,7 +63,7 @@ function loadChartTopTen(countries){
         data: {
             labels: labels,
             datasets: [{
-                label: 'Total de Mortes',
+                label: 'Total Deaths',
                 data: values,
                 backgroundColor: '#7a1cd3'
             }]
@@ -86,7 +76,7 @@ function loadChartTopTen(countries){
                 },
                 title: {
                     display: true,
-                    text: "Total de mortes por país = Top 10"
+                    text: "Total Deaths by Country = Top 10"
                 }
             }
         }
