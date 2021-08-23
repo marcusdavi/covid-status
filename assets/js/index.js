@@ -53,7 +53,7 @@ function loadChartTopTen(countries){
     const labels = [];
     const values = [];
 
-    for (const country of countries) {
+    for (let country of countries) {
         labels.push(country.Country);
         values.push(country.TotalDeaths);
     }
