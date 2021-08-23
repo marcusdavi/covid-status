@@ -12,6 +12,7 @@ O aplicativo exibe um panorama geral da covid-19 no mundo e permite o detalhamen
 * HTML
 * CSS
 * JavaScript
+* Axios (Consumo da API)
 
 ## Como rodar
 * Fazer um clone deste repositório
